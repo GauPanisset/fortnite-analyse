@@ -13,7 +13,7 @@
     import 'bootstrap-vue/dist/bootstrap-vue.css';
     import axios from 'axios';
 
-    const base = 'http://localhost:5001';
+    const base = 'https://fortnite-analyse-app.herokuapp.com';
 
     export default {
         name: "reader",
