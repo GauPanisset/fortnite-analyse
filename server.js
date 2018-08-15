@@ -1,5 +1,7 @@
 const Express = require("express");
 const BP = require("body-parser");
+const serveStatic = require('serve-static');
+
 
 const router = Express.Router();
 const app = Express();
