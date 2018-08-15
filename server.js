@@ -14,6 +14,8 @@ app.use(function(req, res, next) {
   next();
 });
 
+app.use(serveStatic(__dirname + "/dist"));
+
 app.listen(PORT, (err) => {
 
   if (err) {
