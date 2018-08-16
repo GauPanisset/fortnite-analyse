@@ -9,6 +9,12 @@ const PORT = process.env.PORT || 8080;
 
 app.use(BP.json());
 
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Authorization, Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
 app.use(serveStatic(__dirname + "/dist"));
 
 app.use('/read', require('./read.js').router);
