@@ -1,5 +1,5 @@
 const Express = require('express');
-const Storage = require('./storage');
+const Storage = require('./replay/storage');
 const Fs = require('fs');
 const Path = require('path');
 const BinaryFile = require('binary-file');
