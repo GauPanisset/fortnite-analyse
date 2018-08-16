@@ -11,6 +11,8 @@ app.use(BP.json());
 
 app.use(function(req, res, next) {
   req.header("Access-Control-Allow-Origin", "*");
+  req.header("Access-Control-Allow-Headers", "Authorization, Origin, X-Requested-With, Content-Type, Accept");
+  res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Authorization, Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
