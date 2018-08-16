@@ -3,7 +3,6 @@ const BP = require("body-parser");
 const serveStatic = require('serve-static');
 
 
-const router = Express.Router();
 const app = Express();
 
 const PORT = process.env.PORT || 8080;
@@ -11,6 +10,8 @@ const PORT = process.env.PORT || 8080;
 app.use(BP.json());
 
 app.use(serveStatic(__dirname + "/dist"));
+
+app.use('/read', require('./read.js').router);
 
 app.listen(PORT, (err) => {
 

@@ -13,7 +13,8 @@
     import 'bootstrap-vue/dist/bootstrap-vue.css';
     import axios from 'axios';
 
-    const base = 'https://fortnite-analyse-app.herokuapp.com';
+    //const base = 'https://fortnite-analyse-app.herokuapp.com';
+    const base = 'http://localhost:8080';
 
     export default {
         name: "reader",
@@ -24,6 +25,7 @@
         },
         methods: {
             sendFile() {
+                this.$emit('load', true);
 
                 let data = new FormData();
                 data.append("replay", this.file);
