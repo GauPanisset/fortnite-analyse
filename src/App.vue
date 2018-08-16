@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <reader v-on:killfeed="setKillfeed($event)" v-on:load="getLoad()"></reader>
+        <reader v-on:killfeed="setKillfeed($event)" v-on:load="getLoad($event)"></reader>
         <img v-if="loading === true" :src="getImgUrl('loading.gif')"/>
         <killfeed :content="killfeed"></killfeed>
     <!--router-view/-->
@@ -29,8 +29,8 @@
                 this.loading = false;
                 this.killfeed = data;
             },
-            getLoad() {
-                this.loading = true;
+            getLoad(data) {
+                this.loading = data;
             },
             getImgUrl(pic) {                                //Méthode pour afficher les images à partir de l'url.
 

@@ -16,6 +16,7 @@
     //const base = 'https://fortnite-analyse.herokuapp.com';
     //const base = 'http://localhost:8080';
     const base = '';
+
     export default {
         name: "reader",
         data() {
@@ -33,9 +34,9 @@
                     .post(base + '/read', data)
                     .then(response => {
                         this.sendKillfeed(response.data);
-                        console.log('file uploaded');
                     })
                     .catch(err => {
+                        this.$emit('load', false);
                         console.log(err);
                     });
             },
