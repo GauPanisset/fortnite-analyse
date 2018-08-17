@@ -41,8 +41,8 @@
                     });
             },
             sendKillfeed(data) {
-                const gunType = ['Storm', 'Fall', 'Pistol', 'Shotgun', 'AR', 'SMG', 'Sniper'];
-                const koString = ['eliminates', 'knock out'];
+              const gunType = ['Storm', 'Fall', 'Pistol', 'Shotgun', 'AR', 'SMG', 'Sniper', 'Pickaxe', "Grenade", undefined, "Grenade Launcher", undefined, undefined, undefined, undefined, "No mercy", undefined, undefined, undefined, undefined, undefined, undefined, "LMG", undefined];
+              const koString = ['eliminates', 'knock out'];
                 const that = this;
                 let killfeed = [];
                 data.forEach(chunk => {
