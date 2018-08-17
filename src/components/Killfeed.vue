@@ -2,7 +2,7 @@
     <div class="container" v-if="content.length > 0">
         <table id="killfeed-tab">
             <tr v-for="kill in content" :key="kill.time+kill.eliminated+kill.ko">
-                <th class="kill">{{kill.time + " – " + kill.eliminator + " " + kill.ko + " " + kill.eliminated + " with " + kill.gun}}</th>
+                <th class="kill">{{millisecondsToTime(kill.time) + " – " + kill.eliminator + " " + kill.ko + " " + kill.eliminated + " with " + kill.gun}}</th>
             </tr>
         </table>
     </div>
@@ -18,6 +18,11 @@
         props: ["content"],
         data() {
             return {
+            }
+        },
+        methods: {
+            millisecondsToTime(ms) {
+                return new Date(ms).toISOString().slice(14, -5);
             }
         }
     }

@@ -41,27 +41,48 @@
                     });
             },
             sendKillfeed(data) {
-              const gunType = ['Storm', 'Fall', 'Pistol', 'Shotgun', 'AR', 'SMG', 'Sniper', 'Pickaxe', "Grenade", undefined, "Grenade Launcher", undefined, undefined, undefined, undefined, "No mercy", undefined, undefined, undefined, undefined, undefined, undefined, "LMG", undefined];
-              const koString = ['eliminates', 'knock out'];
-                const that = this;
-                let killfeed = [];
-                data.forEach(chunk => {
-                    if (chunk.data.group === "playerElim\0") {
-                        let kill = {
-                            time: that.millisecondsToTime(chunk.data.time1),
-                            eliminator: chunk.content.eliminator,
-                            eliminated: chunk.content.eliminated,
-                            gun: (gunType[chunk.content.gun] !== undefined ? gunType[chunk.content.gun] : chunk.content.gun),
-                            ko: koString[chunk.content.ko]
-                        };
-                        killfeed.push(kill);
+                const gunType = ['Storm', 'Fall', 'Pistol', 'Shotgun', 'AR', 'SMG', 'Sniper', 'Pickaxe', "Grenade", undefined, "Grenade Launcher", undefined, undefined, undefined, undefined, "No mercy", undefined, undefined, undefined, undefined, undefined, undefined, "LMG", undefined];
+                const koString = ['eliminates', 'knock out'];
+                    let killfeed = [];
+                    let maxTime = 0;
+                    data.forEach(chunk => {
+                        if (chunk.data.group === "playerElim\0") {
+                            if (maxTime < chunk.data.time1) {
+                                maxTime = chunk.data.time1;
+                            }
+                            let kill = {
+                                time: chunk.data.time1,
+                                eliminator: chunk.content.eliminator,
+                                eliminated: chunk.content.eliminated,
+                                gun: (gunType[chunk.content.gun] !== undefined ? gunType[chunk.content.gun] : chunk.content.gun),
+                                ko: koString[chunk.content.ko]
+                            };
+                            killfeed.push(kill);
+                        }
+                    });
+                    this.$emit('fromReader', {"killfeed": killfeed, "weaponView": this.weaponCount(killfeed), "maxTime": Math.trunc(maxTime/10000)});
+
+            },
+            weaponCount(data) {
+                let count = {};
+                data.forEach(kill => {
+                    if (count[kill.gun] === undefined) {
+                        count[kill.gun] = {tot: 1, time: {}};
+                    } else {
+                        count[kill.gun].tot += 1;
+                    }
+                    if (count[kill.gun].time[Math.trunc(kill.time/10000)] === undefined) {
+                        count[kill.gun].time[Math.trunc(kill.time/10000)] = 1
+                    } else {
+                        count[kill.gun].time[Math.trunc(kill.time/10000)] += 1
                     }
                 });
-                this.$emit('killfeed', killfeed);
+                let res = [];
+                for (let prop in count) {
+                    res.push({"weapon": prop, "tot": count[prop].tot, "time": count[prop].time})
+                }
+               return res;
             },
-            millisecondsToTime(ms) {
-              return new Date(ms).toISOString().slice(14, -5);
-            }
         },
         mounted() {
             const data = new FormData();

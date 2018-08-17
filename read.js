@@ -11,7 +11,8 @@ const history = {
   HISTORY_INITIAL							: 0,
   HISTORY_FIXEDSIZE_FRIENDLY_NAME			: 1,
   HISTORY_COMPRESSION						: 2,
-  HISTORY_RECORDED_TIMESTAMP				: 3
+  HISTORY_RECORDED_TIMESTAMP				: 3,
+  HISTORY_STREAM_CHUNK_TIMES				: 4,
 };
 
 const gunType = ['Storm', 'Fall', 'Pistol', 'Shotgun', 'AR', 'SMG', 'Sniper', 'Pickaxe', "Grenade", undefined, "Grenade Launcher", undefined, undefined, undefined, undefined, "No mercy", undefined, undefined, undefined, undefined, undefined, undefined, "LMG", undefined,];
@@ -104,7 +105,6 @@ router.post('/', Storage.upload.single('replay'), (req, res, next) => {
             chunk.data.time1 = await myBinaryFile.readUInt32();
             chunk.data.time2 = await myBinaryFile.readUInt32();
             chunk.data.sizeInBytes = await myBinaryFile.readUInt32();
-
             if (chunk.data.group === "playerElim\0") {
               myBinaryFile.skipBytes(45);
               chunk.content.eliminated = await myBinaryFile.readFString();
@@ -125,6 +125,13 @@ router.post('/', Storage.upload.single('replay'), (req, res, next) => {
               chunk.content.position = await myBinaryFile.readUInt32();
               chunk.content.totalPlayers = await myBinaryFile.readUInt32();
             }
+          } else if (chunk.type === chunkType["Checkpoint"]) {
+            chunk.data.id = await myBinaryFile.readFString();
+            chunk.data.group = await myBinaryFile.readFString();
+            chunk.data.metadata = await myBinaryFile.readFString();
+            chunk.data.time1 = await myBinaryFile.readUInt32();
+            chunk.data.time2 = await myBinaryFile.readUInt32();
+            chunk.data.sizeInBytes = await myBinaryFile.readUInt32();
           }
 
           myBinaryFile.seek(chunk.offset + chunk.sizeInBytes);
