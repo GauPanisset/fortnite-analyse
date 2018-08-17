@@ -14,7 +14,7 @@ const history = {
   HISTORY_RECORDED_TIMESTAMP				: 3
 };
 
-const gunType = ['Storm', 'Fall', 'Pistol', 'Shotgun', 'AR', 'SMG', 'Sniper'];
+const gunType = ['Storm', 'Fall', 'Pistol', 'Shotgun', 'AR', 'SMG', 'Sniper', 'Pickaxe', "Grenade", undefined, "Grenade Launcher", undefined, undefined, undefined, undefined, "No mercy", undefined, undefined, undefined, undefined, undefined, undefined, "LMG", undefined,];
 
 const chunkType = {
   'Header': 0,
@@ -26,11 +26,12 @@ const chunkType = {
 const koString = ['eliminates', 'knock out'];
 
 router.post('/', Storage.upload.single('replay'), (req, res, next) => {
-
+  let tic = Date.now();
   if (req.file !== undefined) {
     const myPath = Path.resolve(req.file.path);
     const myBinaryFile = new BinaryFile(myPath, 'r', true);
-
+    let toc = Date.now();
+    console.log("1 : " + (toc - tic));
     let fileInfo = {
       size: null,
       magicNumber: null,
@@ -50,7 +51,8 @@ router.post('/', Storage.upload.single('replay'), (req, res, next) => {
       try {
         await myBinaryFile.open();
         console.log('File opened');
-
+        tic = Date.now();
+        console.log("2 : "+ (tic - toc));
         fileInfo.size = await myBinaryFile.size();
         fileInfo.magicNumber = await myBinaryFile.readUInt32();
 
@@ -77,7 +79,8 @@ router.post('/', Storage.upload.single('replay'), (req, res, next) => {
         if (fileInfo.fileVersion >= history.HISTORY_COMPRESSION) {
           fileInfo.isCompressed = await myBinaryFile.readUInt32() !== 0;
         }
-
+        toc = Date.now();
+        console.log("3 : " + (toc - tic));
         //console.log(fileInfo);
 
         while (fileInfo.size > myBinaryFile.tell()) {
