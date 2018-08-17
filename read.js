@@ -137,7 +137,7 @@ router.post('/', Storage.upload.single('replay'), (req, res, next) => {
         Fs.unlink(myPath, (err) => {
           if (err) throw err;
           tic = Date.now();
-          console.log("4 : " + tic - toc);
+          console.log("4 : " + (tic - toc));
           console.log('deleted');
         });
 
