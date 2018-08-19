@@ -2,7 +2,7 @@
     <b-card no-body>
         <b-tabs card>
             <b-tab v-for="weapon in content" :key="weapon.weapon" :title="weapon.weapon + ' : ' + weapon.tot">
-                <line-chart :data="weapon.data"></line-chart>
+                <line-chart :data="weapon.data" :option="{responsive: false, maintainAspectRatio: false}" :height="200"></line-chart>
             </b-tab>
         </b-tabs>
     </b-card>
@@ -27,5 +27,7 @@
 </script>
 
 <style scoped>
-
+    .chart-container {
+        height: 50px;
+    }
 </style>
