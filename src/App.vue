@@ -56,19 +56,23 @@
                 const maxTime = data.maxTime;
                 this.loading = false;
                 this.killfeed = data.killfeed;
-                const that = this;
+                let tmp = [];
+                let tmp2 = [];
                 data.weaponView.forEach(weapon => {
                     let data = [];
+                    let data2 = [];
                     let label = [];
-                    for (let i = 0; i < maxTime; i ++) {
+                    for (let i = 0; i < maxTime + 1; i ++) {
                       label[i] = this.millisecondsToTime(i*10000);
                         if (weapon.time[i] === undefined) {
                             data[i] = 0;
+                            data2[i] = (i === 0 ? 0 : data2[i - 1]);
                         } else {
                             data[i] = weapon.time[i];
+                            data2[i] = data2[i - 1] + weapon.time[i];
                         }
                     }
-                    that.weaponView.push({
+                    tmp.push({
                         "weapon": weapon.weapon,
                         "tot": weapon.tot,
                         "data": {
@@ -79,11 +83,27 @@
                                     backgroundColor: '#999999',
                                     data: data,
                                 }
-                            ],
-                            "value": data
+                            ]
+                        }
+                    });
+                    tmp2.push({
+                        "weapon": weapon.weapon,
+                        "tot": weapon.tot,
+                        "data": {
+                            labels: label,
+                            datasets: [
+                                {
+                                    label: 'Kills',
+                                    backgroundColor: '#999999',
+                                    data: data2,
+                                }
+                            ]
                         }
                     });
                 });
+                this.weaponView.push(tmp);
+                this.weaponView.push(tmp2);
+                console.log(this.weaponView)
             },
             getLoad(data) {
                 this.loading = data;

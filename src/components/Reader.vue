@@ -41,7 +41,7 @@
                     });
             },
             sendKillfeed(data) {
-                const gunType = ['Storm', 'Fall', 'Pistol', 'Shotgun', 'AR', 'SMG', 'Sniper', 'Pickaxe', "Grenade", "C4", "Grenade Launcher", "Rocket Launcher", undefined, undefined, "Trap", "No mercy", undefined, undefined, undefined, undefined, undefined, undefined, "LMG", "Poison"];
+                const gunType = ['Storm', 'Fall', 'Pistol', 'Shotgun', 'AR', 'SMG', 'Sniper', 'Pickaxe', "Grenade", "C4", "Grenade Launcher", "Rocket Launcher", "Minigun", undefined, "Trap", "No mercy", undefined, undefined, undefined, undefined, undefined, undefined, "LMG", "Poison"];
                 const koString = ['eliminates', 'knock out'];
                     let killfeed = [];
                     let maxTime = 0;
@@ -65,6 +65,7 @@
             },
             weaponCount(data) {
                 let count = {};
+                let lastTime = 0;
                 data.forEach(kill => {
                     if (kill.gun !== "No mercy"){
                         if (count[kill.gun] === undefined) {
@@ -73,9 +74,9 @@
                             count[kill.gun].tot += 1;
                         }
                         if (count[kill.gun].time[Math.trunc(kill.time / 10000)] === undefined) {
-                            count[kill.gun].time[Math.trunc(kill.time / 10000)] = 1
+                            count[kill.gun].time[Math.trunc(kill.time / 10000)] = 1;
                         } else {
-                            count[kill.gun].time[Math.trunc(kill.time / 10000)] += 1
+                            count[kill.gun].time[Math.trunc(kill.time / 10000)] += 1;
                         }
                     }
                 });
