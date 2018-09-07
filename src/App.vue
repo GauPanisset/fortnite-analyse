@@ -33,7 +33,8 @@
 <script>
     import Killfeed from './components/Killfeed';
     import Reader from './components/Reader';
-    import WeaponView from "./components/WeaponView";
+    import WeaponView from "./components/WeaponView"
+    import Chart from "./components/Chart"
 
 
     export default {
@@ -42,68 +43,36 @@
             WeaponView,
             Killfeed,
             Reader,
+            Chart,
         },
         data() {
             return {
                 killfeed: [],
-                weaponView: [],
+                weaponView: {
+                    label: [],
+                    options: [],
+                    data: [],
+                },
                 loading: false,
+                offset: 15,
+
             }
         },
         methods: {
             setData(data) {
-                console.log(data);
-                const maxTime = data.maxTime;
                 this.loading = false;
                 this.killfeed = data.killfeed;
-                let tmp = [];
-                let tmp2 = [];
-                data.weaponView.forEach(weapon => {
-                    let data = [];
-                    let data2 = [];
-                    let label = [];
-                    for (let i = 0; i < maxTime + 1; i ++) {
-                      label[i] = this.millisecondsToTime(i*10000);
-                        if (weapon.time[i] === undefined) {
-                            data[i] = 0;
-                            data2[i] = (i === 0 ? 0 : data2[i - 1]);
-                        } else {
-                            data[i] = weapon.time[i];
-                            data2[i] = data2[i - 1] + weapon.time[i];
-                        }
-                    }
-                    tmp.push({
-                        "weapon": weapon.weapon,
-                        "tot": weapon.tot,
-                        "data": {
-                            labels: label,
-                            datasets: [
-                                {
-                                    label: 'Kills',
-                                    backgroundColor: '#999999',
-                                    data: data,
-                                }
-                            ]
-                        }
+
+                this.weaponView.label = data.chartData.label;
+
+                for (let gun in data.chartData.data) {
+                    this.weaponView.data.push({
+                        weapon: gun,
+                        data: data.chartData.data[gun],
                     });
-                    tmp2.push({
-                        "weapon": weapon.weapon,
-                        "tot": weapon.tot,
-                        "data": {
-                            labels: label,
-                            datasets: [
-                                {
-                                    label: 'Kills',
-                                    backgroundColor: '#999999',
-                                    data: data2,
-                                }
-                            ]
-                        }
-                    });
-                });
-                this.weaponView.push(tmp);
-                this.weaponView.push(tmp2);
-                console.log(this.weaponView)
+                }
+
+                                  //[0, this.offset, 35, 60, 180, 120, 120, 120, 90, 90, 60, 90, 40, 60, 30, 25, 30, 25];
             },
             getLoad(data) {
                 this.loading = data;

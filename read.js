@@ -27,12 +27,11 @@ const chunkType = {
 const koString = ['eliminates', 'knock out'];
 
 router.post('/', Storage.upload.single('replay'), (req, res, next) => {
-  let tic = Date.now();
   if (req.file !== undefined) {
+    let count = 0;
+
     const myPath = Path.resolve(req.file.path);
     const myBinaryFile = new BinaryFile(myPath, 'r', true);
-    let toc = Date.now();
-    console.log("1 : " + (toc - tic));
     let fileInfo = {
       size: null,
       magicNumber: null,
@@ -52,8 +51,6 @@ router.post('/', Storage.upload.single('replay'), (req, res, next) => {
       try {
         await myBinaryFile.open();
         console.log('File opened');
-        tic = Date.now();
-        console.log("2 : "+ (tic - toc));
         fileInfo.size = await myBinaryFile.size();
         fileInfo.magicNumber = await myBinaryFile.readUInt32();
 
@@ -80,8 +77,6 @@ router.post('/', Storage.upload.single('replay'), (req, res, next) => {
         if (fileInfo.fileVersion >= history.HISTORY_COMPRESSION) {
           fileInfo.isCompressed = await myBinaryFile.readUInt32() !== 0;
         }
-        toc = Date.now();
-        console.log("3 : " + (toc - tic));
         //console.log(fileInfo);
 
         while (fileInfo.size > myBinaryFile.tell()) {
@@ -95,7 +90,7 @@ router.post('/', Storage.upload.single('replay'), (req, res, next) => {
 
           chunk.type = await myBinaryFile.readUInt32();
           chunk.sizeInBytes = await myBinaryFile.readUInt32();
-
+          console.log("type : " + chunk.type + " -- size : " + chunk.sizeInBytes + " -- position : " + myBinaryFile.tell());
           chunk.offset = myBinaryFile.tell();
 
           if (chunk.type === chunkType["Event"]) {
@@ -105,6 +100,7 @@ router.post('/', Storage.upload.single('replay'), (req, res, next) => {
             chunk.data.time1 = await myBinaryFile.readUInt32();
             chunk.data.time2 = await myBinaryFile.readUInt32();
             chunk.data.sizeInBytes = await myBinaryFile.readUInt32();
+            count += chunk.data.sizeInBytes;
             if (chunk.data.group === "playerElim\0") {
               myBinaryFile.skipBytes(45);
               chunk.content.eliminated = await myBinaryFile.readFString();
@@ -113,6 +109,9 @@ router.post('/', Storage.upload.single('replay'), (req, res, next) => {
               chunk.content.ko = await myBinaryFile.readUInt32();
 
               //console.log(millisecondsToTime(chunk.data.time1) + " – " + chunk.content.eliminator + " " + koString[chunk.content.ko] + " " + chunk.content.eliminated + " with " + (gunType[chunk.content.gun] !== undefined ? gunType[chunk.content.gun] : chunk.content.gun));
+            } else {
+              console.log(myBinaryFile.tell());
+              console.log(chunk.data.group);
             }
 
             if (chunk.data.metadata === "AthenaMatchStats") {
@@ -131,7 +130,9 @@ router.post('/', Storage.upload.single('replay'), (req, res, next) => {
             chunk.data.metadata = await myBinaryFile.readFString();
             chunk.data.time1 = await myBinaryFile.readUInt32();
             chunk.data.time2 = await myBinaryFile.readUInt32();
+            console.log(millisecondsToTime(chunk.data.time1));
             chunk.data.sizeInBytes = await myBinaryFile.readUInt32();
+            count += chunk.data.sizeInBytes;
           }
 
           myBinaryFile.seek(chunk.offset + chunk.sizeInBytes);
@@ -143,11 +144,10 @@ router.post('/', Storage.upload.single('replay'), (req, res, next) => {
 
         Fs.unlink(myPath, (err) => {
           if (err) throw err;
-          tic = Date.now();
-          console.log("4 : " + (tic - toc));
           console.log('deleted');
         });
 
+        console.log("% analysed : " + fileInfo.size / count);
         res.json(chunks);
 
 
