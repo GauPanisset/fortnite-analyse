@@ -1,31 +1,26 @@
 <template>
     <div id="app">
+
         <reader v-on:fromReader="setData($event)" v-on:load="getLoad($event)"></reader>
         <img v-if="loading === true" :src="getImgUrl('loading.gif')"/>
-      <div role="tablist">
-        <b-card no-body class="mb-1">
-          <b-card-header header-tag="header" class="p-1" role="tab">
-            <b-btn block href="#" v-b-toggle.accordion1 variant="secondary">Killfeed</b-btn>
-          </b-card-header>
-          <b-collapse id="accordion1" visible accordion="my-accordion" role="tabpanel">
-            <b-card-body>
+      <v-expansion-panel id="my-accordion">
+        <v-expansion-panel-content>
+          <div slot="header">Killfeed</div>
+          <v-card>
+            <v-card-text>
               <killfeed :content="killfeed"></killfeed>
-            </b-card-body>
-          </b-collapse>
-        </b-card>
-        <b-card no-body class="mb-1">
-          <b-card-header header-tag="header" class="p-1" role="tab">
-            <b-btn block href="#" v-b-toggle.accordion2 variant="secondary">Weapon count</b-btn>
-          </b-card-header>
-          <b-collapse id="accordion2" accordion="my-accordion" role="tabpanel">
-            <b-card-body>
-              <p class="card-text">
-                <weapon-view :content="weaponView"></weapon-view>
-              </p>
-            </b-card-body>
-          </b-collapse>
-        </b-card>
-      </div>
+            </v-card-text>
+          </v-card>
+        </v-expansion-panel-content>
+        <v-expansion-panel-content>
+          <div slot="header">Weapon charts</div>
+          <v-card>
+            <v-card-text>
+              <weapon-view :content="weaponView"></weapon-view>
+            </v-card-text>
+          </v-card>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
     <!--router-view/-->
     </div>
 </template>
@@ -34,16 +29,15 @@
     import Killfeed from './components/Killfeed';
     import Reader from './components/Reader';
     import WeaponView from "./components/WeaponView"
-    import Chart from "./components/Chart"
 
+    import 'vuetify/dist/vuetify.min.css';
 
     export default {
         name: 'App',
         components: {
-            WeaponView,
+          WeaponView,
             Killfeed,
             Reader,
-            Chart,
         },
         data() {
             return {
@@ -99,5 +93,10 @@
         text-align: center;
         color: #2c3e50;
         margin-top: 60px;
+    }
+
+    #my-accordion {
+        width: 95%;
+        margin: auto;
     }
 </style>

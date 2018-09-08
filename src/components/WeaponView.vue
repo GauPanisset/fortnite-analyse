@@ -1,13 +1,48 @@
 <template>
     <div class="weapon-view">
-      <b-button @click="update(true)">Zone offset : {{offset}}</b-button>
-      <b-button @click="clear()">Clear</b-button>
-      <b-form-input v-model="offset" name="zone" id="zone-input" type=range></b-form-input>
-        <b-tabs card vertical pills>
-            <b-tab v-for="weapon in content.data" :key="weapon.weapon" :title="weapon.weapon + ' : ' + weapon.data[weapon.data.length - 1]">
-              <line-chart v-if="display" :data="chartData[weapon.weapon]" :options="options"></line-chart>
-            </b-tab>
-        </b-tabs>
+
+      <div data-app class="text-xs-center">
+        <v-btn id="offset-button" @click="update(true)">Zone offset : {{offset}}</v-btn>
+        <v-btn id="clear-button" slot="activator" @click="clear()">Clear</v-btn>
+      </div>
+      <div data-app class="text-xs-center">
+        <v-slider
+          slot="activator"
+          v-model="offset"
+          thumb-color="#311B92"
+          thumb-label="always"
+          id="mySlider"
+        ></v-slider>
+      </div>
+
+      <v-tabs
+        slot="extension"
+        v-model="tab"
+        color="rgba(0, 0, 0, 0.05)"
+        grow
+        show-arrows
+      >
+        <v-tabs-slider color="#311B92"></v-tabs-slider>
+
+        <v-tab
+          v-for="weapon in content.data"
+          :key="weapon.weapon"
+        >
+          {{ weapon.weapon + ' : ' + weapon.data[weapon.data.length - 1] }}
+        </v-tab>
+      </v-tabs>
+      <v-tabs-items v-model="tab">
+        <v-tab-item
+          v-for="weapon in content.data"
+          :key="weapon.weapon + '_item'"
+        >
+          <v-card flat>
+            <v-card-text>
+                <line-chart v-if="display" :data="chartData[weapon.weapon]" :options="options" :height="'300px'"></line-chart>
+            </v-card-text>
+          </v-card>
+        </v-tab-item>
+      </v-tabs-items>
     </div>
 </template>
 
@@ -23,7 +58,6 @@
         name: "weapon-view",
         data() {
             return {
-                enabled: true,
                 options: {
                     elements: {
                         points: {
@@ -31,6 +65,7 @@
                         },
                     },
                 },
+                tab: null,
                 offset: 0,
                 chartData: {},
                 display: false,
@@ -88,12 +123,9 @@
 
 <style scoped>
 
-    .switch-container {
-        display: block;
-    }
+  .chart-container {
+    max-height: 65%;
+  }
 
-    .row{
-        flex-wrap: nowrap;
-    }
 
 </style>

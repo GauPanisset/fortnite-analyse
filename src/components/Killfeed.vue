@@ -1,10 +1,15 @@
 <template>
     <div class="container" v-if="content.length > 0">
-        <table id="killfeed-tab">
-            <tr v-for="kill in content" :key="kill.time+kill.eliminated+kill.ko">
-                <th class="kill">{{millisecondsToTime(kill.time * 1000) + " – " + kill.eliminator + " " + kill.ko + " " + kill.eliminated + " with " + kill.gun}}</th>
-            </tr>
-        </table>
+      <v-data-table
+        :items="content"
+        class="elevation-1"
+        hide-actions
+        hide-headers
+      >
+        <template slot="items" slot-scope="props">
+          <td>{{ millisecondsToTime(props.item.time * 1000) + " – " + props.item.eliminator + " " + props.item.ko + " " + props.item.eliminated + " with " + props.item.gun }}</td>
+        </template>
+      </v-data-table>
     </div>
 
     <div class="line" v-else>
@@ -31,6 +36,12 @@
 <style scoped>
 
     .container {
+      width: 50%;
+      height: 65vh;
+      overflow: auto;
+    }
+
+    /*.container {
         width: fit-content;
         height: 65vh;
         padding-top: 20px;
@@ -50,6 +61,6 @@
         border-top: 2px solid rgba(0, 0, 0, 0.5);
         margin: auto;
         width: 50px;
-    }
+    }*/
 
 </style>
